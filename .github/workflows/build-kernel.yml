@@ -18,18 +18,18 @@ jobs:
           echo "KERNEL_SOURCE_BRANCH=$(cat config.env | grep -w "KERNEL_SOURCE_BRANCH" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
           echo "KERNEL_CONFIG=$(cat config.env | grep -w "KERNEL_CONFIG" | head -n 1 | cut -d "=" -f 2)" >> $GITHUB_ENV
           echo "BUILD_ARGS=$(cat config.env | grep -w "BUILD_ARGS" | head -n 1 | cut -d ":" -f 2)" >> $GITHUB_ENV
-
-      - name: Download AOSP Clang
-        if: env.USE_CUSTOM_CLANG != 'true' && env.USE_CUSTOM_GCC != 'true' && env.ENABLE_GCC_AOSP != 'true'
-        run: |
+          
+          - name: Download AOSP Clang
+            if: env.USE_CUSTOM_CLANG != 'true' && env.USE_CUSTOM_GCC != 'true' && env.ENABLE_GCC_AOSP != 'true'
+            run: |
           cd $GITHUB_WORKSPACE/kernel_workspace
           mkdir clang
           wget -nv https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/${{ env.CLANG_BRANCH }}/clang-${{ env.CLANG_VERSION }}.tar.gz
           tar -C clang/ -zxvf clang-${{ env.CLANG_VERSION }}.tar.gz
 
-      - name: Download Custom Clang
-        if: env.USE_CUSTOM_CLANG == 'true' && env.USE_CUSTOM_GCC != 'true' && env.ENABLE_GCC_AOSP != 'true'
-        run: |
+           - name: Download Custom Clang
+             if: env.USE_CUSTOM_CLANG == 'true' && env.USE_CUSTOM_GCC != 'true' && env.ENABLE_GCC_AOSP != 'true'
+             run: |
           cd $GITHUB_WORKSPACE/kernel_workspace
           if [[ ${{ env.CUSTOM_CLANG_SOURCE }} == *'.tar.gz' ]]; then
             wget -nv -O clang.tar.gz ${{ env.CUSTOM_CLANG_SOURCE }}
@@ -50,9 +50,9 @@ jobs:
             mv -f "$(find ./clang -mindepth 1  -maxdepth 1 -type d)"/* ./clang
           fi
 
-      - name: Download GCC AOSP
-        if: env.ENABLE_GCC_AOSP == 'true' && env.USE_CUSTOM_GCC != 'true' && env.USE_CUSTOM_CLANG != 'true'
-        run: |
+          - name: Download GCC AOSP
+            if: env.ENABLE_GCC_AOSP == 'true' && env.USE_CUSTOM_GCC != 'true' && env.USE_CUSTOM_CLANG != 'true'
+            run: |
           cd $GITHUB_WORKSPACE/kernel_workspace
           if [ ${{ env.ENABLE_GCC_ARM64 }} = true ]; then
             mkdir gcc-64
@@ -68,9 +68,9 @@ jobs:
             echo "GCC_32=CROSS_COMPILE_ARM32=$GITHUB_WORKSPACE/kernel_workspace/gcc-32/bin/arm-linux-androideabi-" >> $GITHUB_ENV
           fi
 
-      - name: Download Custom GCC
-        if: env.USE_CUSTOM_GCC == 'true' && env.ENABLE_GCC_AOSP != 'true' && env.USE_CUSTOM_CLANG != 'true'
-        run: |
+          - name: Download Custom GCC
+            if: env.USE_CUSTOM_GCC == 'true' && env.ENABLE_GCC_AOSP != 'true' && env.USE_CUSTOM_CLANG != 'true'
+            run: |
           cd $GITHUB_WORKSPACE/kernel_workspace
           if [ ${{ env.USE_CUSTOM_GCC_64 }} = true ]; then
             if [[ ${{ env.CUSTOM_GCC_64_SOURCE }} == *'.tar.gz' ]]; then
