@@ -22,29 +22,29 @@ jobs:
           - name: Download AOSP Clang
             if: env.USE_CUSTOM_CLANG != 'true' && env.USE_CUSTOM_GCC != 'true' && env.ENABLE_GCC_AOSP != 'true'
             run: |
-          cd $GITHUB_WORKSPACE/kernel_workspace
-          mkdir clang
-          wget -nv https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/${{ env.CLANG_BRANCH }}/clang-${{ env.CLANG_VERSION }}.tar.gz
-          tar -C clang/ -zxvf clang-${{ env.CLANG_VERSION }}.tar.gz
+              cd $GITHUB_WORKSPACE/kernel_workspace
+              mkdir clang
+              wget -nv https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/${{ env.CLANG_BRANCH }}/clang-${{ env.CLANG_VERSION }}.tar.gz
+              tar -C clang/ -zxvf clang-${{ env.CLANG_VERSION }}.tar.gz
 
            - name: Download Custom Clang
              if: env.USE_CUSTOM_CLANG == 'true' && env.USE_CUSTOM_GCC != 'true' && env.ENABLE_GCC_AOSP != 'true'
              run: |
-          cd $GITHUB_WORKSPACE/kernel_workspace
-          if [[ ${{ env.CUSTOM_CLANG_SOURCE }} == *'.tar.gz' ]]; then
-            wget -nv -O clang.tar.gz ${{ env.CUSTOM_CLANG_SOURCE }}
-            mkdir clang
-            tar -C clang/ -zxvf clang.tar.gz
-          elif [[ ${{ env.CUSTOM_CLANG_SOURCE }} == *'.tar.xz' ]]; then
-            wget -nv -O clang.tar.xz ${{ env.CUSTOM_CLANG_SOURCE }}
-            mkdir clang
-            tar -C clang/ -Jxvf clang.tar.xz
-          elif [[ ${{ env.CUSTOM_CLANG_SOURCE }} == *'.git' ]]; then
-            git clone ${{ env.CUSTOM_CLANG_SOURCE }} -b ${{ env.CUSTOM_CLANG_BRANCH }} clang --depth=1
-          else
-            wget -nv -O clang.zip ${{ env.CUSTOM_CLANG_SOURCE }}
-            mkdir clang
-            unzip clang.zip -d clang/
+               cd $GITHUB_WORKSPACE/kernel_workspace
+               if [[ ${{ env.CUSTOM_CLANG_SOURCE }} == *'.tar.gz' ]]; then
+               wget -nv -O clang.tar.gz ${{ env.CUSTOM_CLANG_SOURCE }}
+               mkdir clang
+               tar -C clang/ -zxvf clang.tar.gz
+             elif [[ ${{ env.CUSTOM_CLANG_SOURCE }} == *'.tar.xz' ]]; then
+               wget -nv -O clang.tar.xz ${{ env.CUSTOM_CLANG_SOURCE }}
+               mkdir clang
+               tar -C clang/ -Jxvf clang.tar.xz
+             elif [[ ${{ env.CUSTOM_CLANG_SOURCE }} == *'.git' ]]; then
+             git clone ${{ env.CUSTOM_CLANG_SOURCE }} -b ${{ env.CUSTOM_CLANG_BRANCH }} clang --depth=1
+             else
+               wget -nv -O clang.zip ${{ env.CUSTOM_CLANG_SOURCE }}
+               mkdir clang
+               unzip clang.zip -d clang/
           fi
           if [[ "$(find ./clang -mindepth 1  -maxdepth 1 -type d | wc -l)" == "1" ]]; then
             mv -f "$(find ./clang -mindepth 1  -maxdepth 1 -type d)"/* ./clang
